@@ -73,17 +73,17 @@
       ; I don't want to require users to type:
       ;     :: (arg-types ...) -> result-type
       ; so, the define*-helper macro allows me to avoid the extra parentheses.
-      [(define* (name args ...)
+      [(define* (name . args)
          :: arg1-type rest ...)
     
-       (define*-helper (name args ...)
+       (define*-helper (name . args)
          (arg1-type) rest ...)]
   
       ; function definition without type.
-      [(define* (name arg ...)
+      [(define* (name . args)
          body ...)
   
-       (define  (name arg ...)
+       (define  (name . args)
          body ...)]))
   
   (define-syntax define*-helper
@@ -92,20 +92,20 @@
       ; The final case.  We've consumed argument types (putting them into the
       ; arg-types list) until we reached the "->" which means all that remains
       ; is the return type and the body.
-      [(define*-helper (name args ...)
+      [(define*-helper (name . args)
          (arg-types ...) -> result-type
          body ...)
        
        (begin (: name (arg-types ... -> result-type))
-              (define (name args ...)
+              (define (name . args)
                 body ...))]
   
       ; The initial/intermediate case.  We're consuming argument types and
       ; placing them into the arg-types list.
-      [(define*-helper (name args ...)
+      [(define*-helper (name . args)
          (arg-types ...) next-arg-type rest ...)
   
-       (define*-helper (name args ...)
+       (define*-helper (name . args)
          (arg-types ... next-arg-type) rest ...)])))
 
 ; MIT License
